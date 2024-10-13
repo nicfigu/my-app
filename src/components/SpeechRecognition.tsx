@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import blob from "./images/blob.gif";
 
 interface SpeechRecognitionProps {
@@ -6,6 +6,7 @@ interface SpeechRecognitionProps {
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   note: string;
+  onDone: () => void;
 }
 
 const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
@@ -13,15 +14,17 @@ const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
   setIsListening,
   setNote,
   note,
+  onDone,
 }) => {
   const micRef = useRef<SpeechRecognition | null>(null);
+  const [isRecognitionActive, setIsRecognitionActive] = useState(false);
 
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     micRef.current = new SpeechRecognition();
     micRef.current.continuous = true;
-    micRef.current.interimResults = true;
+    micRef.current.interimResults = false;
     micRef.current.lang = "en-US";
 
     micRef.current.onresult = (event) => {
@@ -36,20 +39,28 @@ const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
       console.log(event.error);
     };
 
+    micRef.current.onend = () => {
+      setIsRecognitionActive(false);
+      if (note) {
+        onDone();
+      }
+    };
+
     return () => {
       if (micRef.current) {
         micRef.current.stop();
       }
     };
-  }, [setNote]);
+  }, [setNote, note, onDone]);
 
   useEffect(() => {
-    if (isListening) {
+    if (isListening && !isRecognitionActive) {
       micRef.current?.start();
-    } else {
+      setIsRecognitionActive(true);
+    } else if (!isListening && isRecognitionActive) {
       micRef.current?.stop();
     }
-  }, [isListening]);
+  }, [isListening, isRecognitionActive]);
 
   const toggleListening = () => {
     setIsListening((prev) => !prev);
@@ -60,12 +71,12 @@ const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
   const showStaticBlob = !isListening && !note;
 
   return (
-    <div className="mt-8 relative w-64 h-64">
+    <div className="mt-8 relative w-52 h-52">
       {showAnimatedBlob && (
         <img
           src={blob}
           alt="animated blob"
-          className="absolute top-0 left-0 w-full h-full object-contain transition-all duration-1000"
+          className="absolute top-[-2] left-0 w-full h-full object-contain transition-all duration-1000 cursor-pointer"
           onClick={toggleListening}
         />
       )}
@@ -73,7 +84,7 @@ const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
         <svg
           viewBox="0 0 405 405"
           xmlns="http://www.w3.org/2000/svg"
-          className="absolute top-0 left-0 w-full h-full transition-all duration-1000"
+          className="absolute top-[-2] left-0 w-full h-full transition-all duration-1000 cursor-pointer"
           onClick={toggleListening}
         >
           <path
