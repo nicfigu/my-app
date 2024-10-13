@@ -1,42 +1,88 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import BlobAnimation from "./components/blob/blob";
+{
+  /*import { SpeechRecognitionService } from "./components/SpeechRecognition/SpeechRecognition";
+const speechRecognitionRef = useRef<SpeechRecognitionService | null>(null);*/
+  /*const handleStartTalking = async () => {
+    if (speechRecognitionRef.current) {
+      try {
+        await speechRecognitionRef.current.startContinuousRecognition(
+          (text) => {
+            setRecognizedText(text);
+          }
+        );
+        setIsTalking(true);
+      } catch (err) {
+        console.error(
+          "Failed to start speech recognition. Please check your microphone access.",
+          err
+        );
+      }
+    }
+  };
 
-const App: React.FC = () => {
-  const [isBlobDrawn, setIsBlobDrawn] = useState(false);
+  const handleStopTalking = async () => {
+    if (speechRecognitionRef.current) {
+      try {
+        await speechRecognitionRef.current.stopContinuousRecognition();
+        setIsTalking(false);
+      } catch (err) {
+        console.error("Failed to stop speech recognition.");
+      }
+    }
+  };
 
-  // Simulate a delay before the blob is drawn, then trigger the animation
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsBlobDrawn(true);
-    }, 1000); // Adjust this delay as needed for your animation
+    // Initialize speech recognition service
+    try {
+      speechRecognitionRef.current = new SpeechRecognitionService();
+    } catch (err) {
+      console.error(
+        "Failed to initialize speech recognition. Please check your Azure credentials.",
+        err
+      );
+    }
 
-    return () => clearTimeout(timer); // Cleanup the timer
+    return () => {
+      // Clean up speech recognition on component unmount
+      if (speechRecognitionRef.current) {
+        speechRecognitionRef.current.stopContinuousRecognition();
+      }
+    };
+  }, []);
+*/
+}
+import React, { useCallback, useEffect, useState } from "react";
+import "./App.css";
+import Header from "./components/Header";
+import SpeechRecognition from "./components/SpeechRecognition";
+import WelcomeMessage from "./components/WelcomeMessage";
+import EventPage from "./components/EventPage";
+const App: React.FC = () => {
+  const [isFaceDetected, setIsFaceDetected] = useState(false);
+  const [note, setNote] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [cluResult, setCluResult] = useState<any>(null);
+  const clearNote = useCallback(() => {
+    setNote("");
   }, []);
 
   return (
-    <div className="App w-screen h-screen flex flex-col bg-gradient-to-tr from-green-600 to-purple-500">
-      {/* Logo in the top left */}
-      <div className="flex justify-start items-start p-4">
-        <img
-          src="https://gmu.bynder.com/m/23ae598a3159a37/original/GM-monogramRGB-png.png"
-          alt="GM Logo"
-          className="w-[150px]"
-        />
-      </div>
-
-      {/* Animated Text */}
-      <div
-        className={`font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-white text-4xl transition-all duration-1000 ${
-          isBlobDrawn ? "mt-4 translate-y-[.5]" : "mt-40"
-        }`}
-      >
-        Welcome to The Fuse
-      </div>
-
-      {/* Blob Animation */}
-      <div className="flex-grow flex flex-col items-center mt-[-10]">
-        {isBlobDrawn && <BlobAnimation />}
+    <div className="App w-full h-[100vh] overflow-hidden flex flex-col bg-gradient-to-tr from-green-400 to-purple-400">
+      <Header onFaceDetected={setIsFaceDetected} onClearNote={clearNote} />
+      <div className="flex-grow flex flex-col items-center justify-center">
+        {isFaceDetected ? (
+          <>
+            <WelcomeMessage note={note} />
+            <SpeechRecognition
+              isListening={isListening}
+              setIsListening={setIsListening}
+              setNote={setNote}
+              note={note}
+            />
+          </>
+        ) : (
+          <EventPage />
+        )}
       </div>
     </div>
   );
