@@ -39,7 +39,7 @@ const events: EventItem[] = [
 
 const EventPage: React.FC = () => (
   <div className="w-full max-w-4xl mx-auto p-4 mt-[-150px]">
-    <h1 className="text-white text-4xl font-bold mb-6 text-center">
+    <h1 className="text-[#ECB23A] text-4xl font-bold mb-6 text-center">
       Today's Events
     </h1>
     <div className="grid grid-cols-2 gap-6">

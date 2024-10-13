@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import blob from "./images/blob.gif";
-
+import click from "./images/click.png";
 interface SpeechRecognitionProps {
   isListening: boolean;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
@@ -81,17 +81,24 @@ const SpeechRecognition: React.FC<SpeechRecognitionProps> = ({
         />
       )}
       {showStaticBlob && (
-        <svg
-          viewBox="0 0 405 405"
-          xmlns="http://www.w3.org/2000/svg"
-          className="absolute top-[-2] left-0 w-full h-full transition-all duration-1000 cursor-pointer"
-          onClick={toggleListening}
-        >
-          <path
-            d="M202.5,403.7603145092726C309.88549632920586,403.7603145092726,389.8687706381316,309.88549632920586,389.86877063813154,202.5C389.86877063813154,102.63682265209307,302.3631773479069,28.47861338406798,202.5,28.478613384068005C106.37946174231226,28.478613384068016,28.43812834384151,106.37946174231223,28.438128343841527,202.49999999999997C28.438128343841534,306.41414007149353,98.58585992850644,403.7603145092726,202.5,403.7603145092726"
-            fill="#24A148"
+        <div className="relative w-full h-full">
+          <svg
+            viewBox="0 0 405 405"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full transition-all duration-300 cursor-pointer hover:scale-110"
+            onClick={toggleListening}
+          >
+            <path
+              d="M202.5,403.7603145092726C309.88549632920586,403.7603145092726,389.8687706381316,309.88549632920586,389.86877063813154,202.5C389.86877063813154,102.63682265209307,302.3631773479069,28.47861338406798,202.5,28.478613384068005C106.37946174231226,28.478613384068016,28.43812834384151,106.37946174231223,28.438128343841527,202.49999999999997C28.438128343841534,306.41414007149353,98.58585992850644,403.7603145092726,202.5,403.7603145092726"
+              fill="#24A148"
+            />
+          </svg>
+          <img
+            src={click}
+            alt="click icon"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[75%] h-[75%] object-contain transition-all duration-300 pointer-events-none"
           />
-        </svg>
+        </div>
       )}
     </div>
   );

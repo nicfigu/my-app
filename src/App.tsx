@@ -71,47 +71,51 @@ const App: React.FC = () => {
 
   return (
     <div
-      className={`App w-full h-[100vh] flex flex-col bg-gradient-to-tr from-green-400 to-purple-400 ${
+      className={`App w-full h-[100vh] flex flex-col bg-white ${
         cluResult ? "overflow-scroll" : "overflow-clip"
       }`}
     >
-      <Header onFaceDetected={setIsFaceDetected} onClearNote={clearNote} />
-      <div className="flex-grow flex flex-col items-center justify-center">
-        {isFaceDetected ? (
-          <>
-            <WelcomeMessage note={note} />
-            <SpeechRecognition
-              isListening={isListening}
-              setIsListening={setIsListening}
-              setNote={setNote}
-              note={note}
-              onDone={handleSpeechRecognitionDone}
-            />
-            {cluResult && shouldPlayTTS && !ttsPlayedRef.current && (
-              <TextToSpeech
-                text={cluResult}
-                play={true}
-                onPlayEnd={handleTTSEnd}
+      <div className="w-full h-[100%] bg-[#006633] overflow-auto">
+        <Header onFaceDetected={setIsFaceDetected} onClearNote={clearNote} />
+        <div className="flex-grow flex flex-col items-center justify-center mt-20">
+          {isFaceDetected ? (
+            <>
+              <WelcomeMessage note={note} />
+              <SpeechRecognition
+                isListening={isListening}
+                setIsListening={setIsListening}
+                setNote={setNote}
+                note={note}
+                onDone={handleSpeechRecognitionDone}
               />
-            )}
-            <span className="text-3xl font-bold mt-[-160px]">{cluResult}</span>
-            {cluResult && useDModel === 1 ? (
-              <div className="flex flex-row items-center gap-36 w-full">
-                <Dmodel />
-                <img src={atrium} alt="atrium" className="w-[35%] h-[35%]" />
-              </div>
-            ) : cluResult && useDModel === 2 ? (
-              <div className="flex flex-row items-center gap-36 w-100%">
-                <Dmodel2 />
-                <img src={room} alt="room" className="w-[35%] h-[35%]" />
-              </div>
-            ) : null}
-          </>
-        ) : (
-          <>
-            <EventPage />
-          </>
-        )}
+              {cluResult && shouldPlayTTS && !ttsPlayedRef.current && (
+                <TextToSpeech
+                  text={cluResult}
+                  play={true}
+                  onPlayEnd={handleTTSEnd}
+                />
+              )}
+              <span className="text-3xl font-bold mt-[-160px]">
+                {cluResult}
+              </span>
+              {cluResult && useDModel === 1 ? (
+                <div className="flex flex-row items-center gap-36 w-full">
+                  <Dmodel />
+                  <img src={atrium} alt="atrium" className="w-[35%] h-[35%]" />
+                </div>
+              ) : cluResult && useDModel === 2 ? (
+                <div className="flex flex-row items-center gap-36 w-100%">
+                  <Dmodel2 />
+                  <img src={room} alt="room" className="w-[35%] h-[35%]" />
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <EventPage />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
